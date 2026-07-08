@@ -34,9 +34,10 @@ Work through concepts in order — each one builds on the previous.
 ### Tier 2 — Data & Networking
 | # | Concept | What You'll Learn |
 |---|---------|-------------------|
-| 04 | [Data Modeling](concepts/04-data-modeling/README.md) | Server state vs client/UI state, entity design |
-| 05 | [Networking Protocols](concepts/05-networking/README.md) | REST vs WebSocket vs SSE — when each is the right call |
-| 06 | [Caching Strategies](concepts/06-caching/README.md) | Stale-while-revalidate, TTL, cache eviction on mobile |
+| 04 | [Data Modeling](concepts/04-data-modeling/README.md) | Server state vs client/UI state, entity design, pagination |
+| 05 | [Networking Protocols](concepts/05-networking/README.md) | REST, short/long polling, WebSocket, SSE, GraphQL, gRPC, MQTT |
+| 06 | [API Design](concepts/api-design/README.md) | Endpoints, request/response structure, IDs, timestamps, idempotency |
+| 07 | [Caching Strategies](concepts/06-caching/README.md) | Stale-while-revalidate, TTL, cache eviction on mobile |
 
 ### Tier 3 — Mobile-Specific Concerns
 | # | Concept | What You'll Learn |
