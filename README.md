@@ -59,9 +59,17 @@ Work through concepts in order — each one builds on the previous.
 | 13 | [Performance](concepts/10-performance/README.md) | FlatList at scale, image caching, JS/UI thread, startup time, memoization |
 
 ### Tier 5 — Full System Design Practice
-Full case studies using the SCADET framework — design a complete system from scratch, then implement the critical parts. Added once Tiers 1–4 are complete.
 
-Planned cases: Newsfeed, Chat, Maps, Ride-hailing.
+Runs against a real local server (`server/`) with variable latency, random failures, real WebSocket, and auth tokens that actually expire. No mocks.
+
+See [concepts/tier-5](concepts/tier-5/README.md) for how Tier 5 works and how to start the server.
+
+| | Case Study | Real API Feature | Key Challenge |
+|--|------------|-----------------|---------------|
+| 14 | [Newsfeed](app/src/case-studies/newsfeed/README.md) | REST + cursor pagination | Messy response shape, cache strategy, infinite scroll |
+| 15 | [Chat](app/src/case-studies/chat/README.md) | Real WebSocket + auth | Token expiry on WS, reconnection under real conditions |
+| 16 | [Offline Sync](app/src/case-studies/offline-sync/README.md) | Notes CRUD + conflicts | Idempotency keys, real 409 conflicts, retry under chaos |
+| 17 | [Ride Hailing](app/src/case-studies/ride-hailing/README.md) | SSE location stream | EventSource on mobile, state machine, throttled re-renders |
 
 ## Exercises
 
