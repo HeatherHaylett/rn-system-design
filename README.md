@@ -58,10 +58,20 @@ Full case studies (Newsfeed, Chat, Maps, Ride-hailing) using the SCADET framewor
 
 ## Exercises
 
-| Exercise | Concept | Difficulty |
-|----------|---------|------------|
-| [Layered Architecture](app/src/exercises/layered-architecture/README.md) | 02 | Beginner |
-| [Optimistic Cart](app/src/exercises/optimistic-cart/README.md) | 08 | Intermediate |
+Work through these in order — each one builds on the concepts before it.
+
+| Exercise | Concept | Difficulty | Time |
+|----------|---------|------------|------|
+| [Layered Architecture](app/src/exercises/layered-architecture/README.md) | Layered Architecture | Beginner | 30–40 min |
+| [Data Flow](app/src/exercises/data-flow/README.md) | Data Flow | Beginner | 30–40 min |
+| [State Management](app/src/exercises/state-management/README.md) | State Management | Intermediate | 40–50 min |
+| [Data Modeling](app/src/exercises/data-modeling/README.md) | Data Modeling | Intermediate | 35–45 min |
+| [Caching](app/src/exercises/caching/README.md) | Caching | Intermediate | 40–50 min |
+| [Optimistic Cart](app/src/exercises/optimistic-cart/README.md) | Optimistic Updates | Intermediate | 40–50 min |
+| [WebSocket Chat](app/src/exercises/websocket-chat/README.md) | Networking Protocols | Advanced | 50–60 min |
+| [Offline Notes](app/src/exercises/offline-notes/README.md) | Offline-First | Advanced | 60–75 min |
+| [Auth Flow](app/src/exercises/auth-flow/README.md) | Auth | Advanced | 50–60 min |
+| [FlatList Performance](app/src/exercises/flatlist-perf/README.md) | Performance | Intermediate | 35–45 min |
 
 ## Interview Frameworks
 
