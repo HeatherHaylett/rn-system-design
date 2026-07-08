@@ -43,3 +43,57 @@ Your job is to refactor it so data flows strictly top-down and actions flow bott
 > "Can you walk me through how data flows in your component tree?"
 
 After this exercise you should be able to draw the data flow diagram for any component tree and immediately spot where flow is going the wrong direction.
+
+## How to Observe with Tools
+
+**React DevTools — Components tab**
+
+1. Open the Components tab and expand the full tree: `CommentThread` → `CommentList` → `CommentCard`
+2. Click each component and look at its props and state panels on the right
+
+Before your fix:
+- `CommentList` will show a `comments` state entry that is a copy of the prop — two sources of truth visible side-by-side
+- `CommentCard` will show a `displayName` state entry that could just be a const
+- Click `CommentCard` and trigger a like — watch the parent's data mutate silently without a React re-render (the count changes in the DOM but React DevTools doesn't show a state update because you bypassed React)
+
+After your fix:
+- `CommentList` should have no local state — only props
+- `CommentCard` should have no state at all
+- A like should show a state update on `CommentThread` (the owner of like counts), and the re-render should propagate down correctly
+
+**React DevTools — Profiler tab**
+
+Record a session, submit a reply, then stop recording. Look at the flame graph:
+- Before fix: `CommentList` re-renders because it maintains its own state, and all `CommentCard`s re-render too
+- After fix: only `CommentThread` and the specific `CommentCard` for the new reply should re-render
+
+## Record Your Observations
+
+```
+Components tab — before fix:
+- What state did CommentList have that it shouldn't?
+
+
+- What state did CommentCard have that it shouldn't?
+
+
+- What happened in the UI when you liked a comment (before fix)?
+  Did React DevTools show a state update? Why or why not?
+
+
+Components tab — after fix:
+- What does CommentList's state panel show now?
+
+
+- Draw the data flow for submitting a reply (use arrows):
+  ReplyBox →
+
+
+Profiler — what re-rendered on a reply submit before vs after:
+  Before:
+
+  After:
+
+
+One thing that surprised me:
+```

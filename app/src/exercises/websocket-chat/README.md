@@ -59,3 +59,66 @@ When the app comes back from the background:
 > "Design a real-time chat feature for a mobile app. Walk me through the protocol choice and what happens when the connection drops."
 
 After this exercise you should be able to describe the full WebSocket lifecycle on mobile: connect, receive, send, disconnect, reconnect, foreground re-entry, and missed message recovery.
+
+## How to Observe with Tools
+
+**Console — connection event log**
+
+Add a `console.log` at every connection lifecycle event:
+```
+[ws] connecting...
+[ws] connected
+[ws] message received: "Hey, how are you?"
+[ws] disconnected (unclean)
+[ws] reconnect attempt 1 — delay 1000ms
+[ws] reconnect attempt 2 — delay 2000ms
+[ws] connected
+[ws] fetching missed messages since 2025-03-15T10:30:00Z
+[ws] 2 missed messages inserted
+```
+
+Then call `wsRef.current?.simulateDrop()` via a debug button and watch the full reconnection sequence play out in the console. Verify the delay doubles each attempt and caps at 30 seconds.
+
+**Console — concurrent reconnect guard**
+
+Rapidly tap "Simulate Drop" twice in quick succession. Check the console — you should see only one reconnect sequence, not two racing. If you see two sequences interleaved, your single-in-flight guard isn't working.
+
+**React DevTools — connection status state**
+
+Open the Components tab, select `ChatScreen`, and watch the `connectionStatus` state field while you:
+1. App opens: `reconnecting` → `connected`
+2. Simulate drop: `connected` → `reconnecting`
+3. Each backoff attempt: stays `reconnecting` (update the label to show attempt number)
+4. Reconnected: `reconnecting` → `connected`
+
+The status badge in the UI should mirror exactly what's in the state panel.
+
+**Message queue inspection**
+
+Add a debug panel that renders the contents of your offline message queue (messages queued while disconnected). Trigger a drop, send 3 messages, then reconnect — watch the queue drain in order and verify each message's status updates from `'sending'` → `'sent'`.
+
+## Record Your Observations
+
+```
+Connection lifecycle — paste the console output for a full drop + reconnect cycle:
+
+
+Reconnect delays — what were the actual delays between each attempt?
+  Attempt 1:
+  Attempt 2:
+  Attempt 3:
+  At what attempt did it hit the 30s cap?
+
+
+Concurrent reconnect test:
+- What happened when you triggered simulateDrop() twice rapidly?
+- How did you prevent two reconnect sequences from running simultaneously?
+
+
+Missed messages:
+- How many missed messages were returned after reconnecting?
+- How did you determine the correct insertion point in the message list?
+
+
+One thing that surprised me:
+```

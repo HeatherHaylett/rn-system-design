@@ -46,3 +46,48 @@ The `filteredPosts` (posts filtered by the search query) is being stored in its 
 > "Walk me through how you'd manage state in a social feed app."
 
 After this exercise you should be able to answer with specific tool choices, the reason for each, and the failure mode it avoids.
+
+## How to Observe with Tools
+
+**React DevTools — Components tab**
+
+1. Open React DevTools and select the Components tab
+2. Click on `FeedScreen` in the tree — look at its state and props panel on the right
+3. Like a post and watch which components highlight (re-render flash)
+
+Before your fix: every visible component in the tree re-renders on a like.
+After your fix: only the component that owns the like count should re-render.
+
+**What to check per problem:**
+- Problem 1: Select `FeedScreen` → state panel should show no raw posts array after your fix, just a React Query result
+- Problem 2: Select `TabBar` → it should read notification count without receiving it as a prop from App
+- Problem 3: Select `FeedScreen` → modal open state should appear in local state, not in a global store
+- Problem 4: Trigger a search → the Components tab should show no `filteredPosts` state entry anywhere
+
+## Record Your Observations
+
+Fill this in as you work — you'll use it when you explain your decisions in an interview.
+
+```
+Before fix — what I observed in React DevTools:
+- Which component owned notification count, and why that was wrong:
+
+
+- What re-rendered when I liked a post (list every component):
+
+
+- Where filteredPosts lived and why that caused a bug:
+
+
+After fix — what changed:
+- Which component now owns notification count, and why:
+
+
+- What re-renders on a like action now:
+
+
+- How many useState calls did you remove by switching to useQuery:
+
+
+One thing that surprised me:
+```

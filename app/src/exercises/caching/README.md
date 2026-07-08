@@ -63,3 +63,60 @@ Compare the two implementations. What did React Query replace? What edge cases d
 > "How would you prevent the profile screen from showing a loading spinner on every visit?"
 
 After this exercise you should be able to describe the SWR pattern, implement it manually if asked, and explain why React Query is the production choice.
+
+## How to Observe with Tools
+
+**Console — fetch count**
+
+`mockApi.ts` logs every fetch call and exposes `getFetchCount()`. Watch the console as you navigate between screens:
+
+- `ProfileScreenNaive`: you'll see a log on every visit
+- `ProfileScreenCached` (Part A): first visit logs, subsequent visits within 60s don't — but a background fetch fires and logs silently
+- `ProfileScreenRQ` (Part B): same behaviour, but observe `isFetching` vs `isLoading` separately
+
+**React DevTools — Components tab**
+
+1. Select your `ProfileScreenRQ` component
+2. Look at the state/hooks panel — you'll see the React Query hook's internal state including `status`, `isFetching`, `dataUpdatedAt`
+3. Navigate away and back within 60 seconds — watch `isFetching` flip to `true` briefly while `isLoading` stays `false`
+4. Wait for the stale time to expire, navigate back — now `isLoading` is `true` (no cached data to show)
+
+This is the clearest way to see the difference between the two flags without reading code.
+
+**React DevTools — Profiler tab**
+
+Record a session across two screen visits:
+- Visit 1: profile renders after a loading state — one render cycle with data
+- Visit 2 (cached): profile renders immediately from cache, then re-renders once more when the background fetch completes
+
+Count the render cycles. Visit 2 should have one extra render (the background update) but no loading spinner.
+
+## Record Your Observations
+
+```
+Console — fetch count:
+- How many times did fetchUser fire on 5 visits to ProfileScreenNaive?
+
+- How many times did fetchUser fire on 5 visits to ProfileScreenCached (within stale time)?
+
+- Same question for ProfileScreenRQ:
+
+
+React DevTools — isFetching vs isLoading:
+- What was isLoading on the second visit (within stale time)?
+
+- What was isFetching on the second visit?
+
+- When does isLoading become true again?
+
+
+Part A vs Part B — lines of code:
+- How many lines is your manual cache.ts + ProfileScreenCached.tsx combined?
+
+- How many lines is ProfileScreenRQ.tsx?
+
+- What edge cases did React Query handle that your manual cache didn't?
+
+
+One thing that surprised me:
+```
