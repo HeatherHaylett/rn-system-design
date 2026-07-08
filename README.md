@@ -30,7 +30,8 @@ Work through concepts in order — each one builds on the previous.
 | 01 | [Mobile NFRs](concepts/01-mobile-nfrs/README.md) | What non-functional requirements mean on mobile: latency, battery, offline, security |
 | 02 | [Layered Architecture](concepts/02-layered-architecture/README.md) | Presentation → Domain → Data layers and why the split matters |
 | 03 | [State Management](concepts/03-state-management/README.md) | useState vs useReducer vs Context vs Zustand vs React Query — what goes where |
-| 04 | [RADIO Framework](concepts/03-radio-framework/README.md) | How to structure a 45-minute system design answer |
+| 04 | [Data Flow](concepts/03-data-flow/README.md) | Unidirectional data flow, reactive programming, props down / callbacks up |
+| 05 | [RADIO Framework](concepts/03-radio-framework/README.md) | How to structure a 45-minute system design answer |
 
 ### Tier 2 — Data & Networking
 | # | Concept | What You'll Learn |
