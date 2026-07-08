@@ -270,4 +270,4 @@ Strong answer:
 
 ## What's Next
 
-State management and layered architecture together answer "where does everything live?" The next concept covers the interview framework for communicating your design: RADIO.
+State management answers where data lives. The next concept covers how it moves — unidirectional data flow and reactive programming.

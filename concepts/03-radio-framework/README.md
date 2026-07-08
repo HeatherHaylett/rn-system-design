@@ -122,6 +122,6 @@ RADIO is your interview performance tool — it structures how you communicate. 
 
 ## What's Next
 
-You now have the three frameworks that anchor everything else: NFRs (what constraints matter on mobile), Layered Architecture (how to organize code to meet them), and RADIO (how to communicate your design in an interview). 
+You now have the full Tier 1 foundation: NFRs (what constraints matter on mobile), Layered Architecture (how to organize code to meet them), State Management (where data lives), Data Flow (how it moves), and RADIO (how to communicate your design in an interview).
 
-Tier 2 goes deeper on the building blocks: how to model data, choose the right networking protocol, and design a caching strategy.
+Tier 2 goes deeper on the building blocks: how to model data, choose the right networking protocol, design an API, and build a caching strategy.

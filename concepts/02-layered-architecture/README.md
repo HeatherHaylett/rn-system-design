@@ -90,4 +90,4 @@ In practice, this means your domain layer is plain TypeScript — no React impor
 
 ## What's Next
 
-With a sense of how code is organized into layers, the next concept covers how to structure your *answer* in a 45-minute interview using the RADIO framework.
+With a sense of how code is organized into layers, the next concept covers where state lives within those layers and which tool manages it: state management.

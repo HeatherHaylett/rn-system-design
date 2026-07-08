@@ -113,4 +113,4 @@ Notice step 7 — after a conflict, you re-fetch rather than trusting your rollb
 
 ## What's Next
 
-The exercise for this concept is [Optimistic Cart](../../app/src/exercises/optimistic-cart/README.md). You'll implement add-to-cart with optimistic updates, then handle the conflict case where an item goes out of stock between page load and checkout.
+The next concept covers the last mobile-specific concern in Tier 3: auth flows — how tokens are stored, refreshed, and what happens when they expire.

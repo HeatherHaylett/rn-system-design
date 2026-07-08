@@ -134,4 +134,4 @@ Strong offline answer:
 
 ## What's Next
 
-Offline-first is about what happens without a network. The next concept covers a related concern: what happens when the user's session expires or their auth token is invalid: auth flows.
+Offline-first is about what happens without a network. The next concept covers a related pattern for when you do have a connection but need the UI to feel instant anyway: optimistic updates.
