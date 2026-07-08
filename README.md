@@ -6,7 +6,11 @@ Each concept has a short read that explains what it is, why it matters on mobile
 
 ## How to Use This Repo
 
-For each concept:
+**Read one concept, do its exercise, then move to the next.** Do not read all the concepts first — by the time you reach the caching exercise, you'll have forgotten what the caching doc said and the connections won't stick.
+
+The one exception: read all five Tier 1 concepts before starting exercises. They're short and tightly connected, and the exercises make more sense once you have the full picture.
+
+After that, the loop for every concept is:
 
 1. **Read the concept doc** — understand the pattern, see a real-world scenario, learn the tradeoffs
 2. **Do the exercise** — scaffolded RN screen with marked problems or TODOs; you bring the design decisions
