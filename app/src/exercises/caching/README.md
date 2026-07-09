@@ -1,6 +1,6 @@
 # Exercise: Caching Strategies
 
-**Concept:** [07 — Caching](../../../../concepts/06-caching/README.md)
+**Concept:** [09 — Caching](../../../../concepts/09-caching/README.md)
 **Difficulty:** Intermediate
 **Time:** 40–50 minutes
 

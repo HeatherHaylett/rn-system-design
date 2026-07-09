@@ -1,6 +1,6 @@
 # Exercise: Unidirectional Data Flow
 
-**Concept:** [04 — Data Flow](../../../../concepts/03-data-flow/README.md)
+**Concept:** [04 — Data Flow](../../../../concepts/04-data-flow/README.md)
 **Difficulty:** Beginner
 **Time:** 30–40 minutes
 

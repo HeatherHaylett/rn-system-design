@@ -1,6 +1,6 @@
 # Exercise: Auth Flow
 
-**Concept:** [09 — Auth Flows](../../../../concepts/09-auth/README.md)
+**Concept:** [12 — Auth Flows](../../../../concepts/12-auth/README.md)
 **Difficulty:** Advanced
 **Time:** 50–60 minutes
 

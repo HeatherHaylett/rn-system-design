@@ -39,28 +39,28 @@ Work through concepts in order — each one builds on the previous.
 | 01 | [Mobile NFRs](concepts/01-mobile-nfrs/README.md) | Latency, battery, offline, security — what NFRs mean on mobile and how to surface them |
 | 02 | [Layered Architecture](concepts/02-layered-architecture/README.md) | Presentation → Domain → Data layers, the dependency rule, why the split matters |
 | 03 | [State Management](concepts/03-state-management/README.md) | useState vs useReducer vs Context vs Zustand vs React Query — what goes where and why |
-| 04 | [Data Flow](concepts/03-data-flow/README.md) | Unidirectional data flow, reactive programming, props down / callbacks up |
-| 05 | [RADIO Framework](concepts/03-radio-framework/README.md) | How to structure a 45-minute system design answer with time allocation per phase |
+| 04 | [Data Flow](concepts/04-data-flow/README.md) | Unidirectional data flow, reactive programming, props down / callbacks up |
+| 05 | [RADIO Framework](concepts/05-radio-framework/README.md) | How to structure a 45-minute system design answer with time allocation per phase |
 
 ### Tier 2 — Data & Networking
 | | Concept | What You'll Learn |
 |--|---------|-------------------|
-| 06 | [Data Modeling](concepts/04-data-modeling/README.md) | Server vs client state, domain models, mapping functions, cursor pagination |
-| 07 | [Networking Protocols](concepts/05-networking/README.md) | REST, short/long polling, WebSocket, SSE, GraphQL, gRPC, MQTT — decision tree |
-| 08 | [API Design](concepts/api-design/README.md) | Endpoints, request/response structure, IDs, timestamps, idempotency |
-| 09 | [Caching](concepts/06-caching/README.md) | SWR, cache-first, network-first, TTL, eviction, storage options |
+| 06 | [Data Modeling](concepts/06-data-modeling/README.md) | Server vs client state, domain models, mapping functions, cursor pagination |
+| 07 | [Networking Protocols](concepts/07-networking/README.md) | REST, short/long polling, WebSocket, SSE, GraphQL, gRPC, MQTT — decision tree |
+| 08 | [API Design](concepts/08-api-design/README.md) | Endpoints, request/response structure, IDs, timestamps, idempotency |
+| 09 | [Caching](concepts/09-caching/README.md) | SWR, cache-first, network-first, TTL, eviction, storage options |
 
 ### Tier 3 — Mobile-Specific Concerns
 | | Concept | What You'll Learn |
 |--|---------|-------------------|
-| 10 | [Offline-First](concepts/07-offline-first/README.md) | Local persistence, mutation queue, conflict resolution, connectivity detection |
-| 11 | [Optimistic Updates](concepts/08-optimistic-updates/README.md) | Immediate UI, rollback on failure, stale data, when not to use it |
-| 12 | [Auth Flows](concepts/09-auth/README.md) | SecureStore vs AsyncStorage, silent refresh, race conditions, deep link re-entry |
+| 10 | [Offline-First](concepts/10-offline-first/README.md) | Local persistence, mutation queue, conflict resolution, connectivity detection |
+| 11 | [Optimistic Updates](concepts/11-optimistic-updates/README.md) | Immediate UI, rollback on failure, stale data, when not to use it |
+| 12 | [Auth Flows](concepts/12-auth/README.md) | SecureStore vs AsyncStorage, silent refresh, race conditions, deep link re-entry |
 
 ### Tier 4 — Performance
 | | Concept | What You'll Learn |
 |--|---------|-------------------|
-| 13 | [Performance](concepts/10-performance/README.md) | FlatList at scale, image caching, JS/UI thread, startup time, memoization |
+| 13 | [Performance](concepts/13-performance/README.md) | FlatList at scale, image caching, JS/UI thread, startup time, memoization |
 
 ### Tier 5 — Full System Design Practice
 
@@ -104,4 +104,4 @@ Two frameworks show up constantly in mobile system design interviews. They compl
 **SCADET** — use this while studying to make sure you know the material deeply:
 - **S**ystem Requirements → **C**onsiderations → **A**rchitecture → **D**esign (API) → **E**valuate NFRs → **T**radeoffs
 
-See [concepts/03-radio-framework](concepts/03-radio-framework/README.md) for how to use RADIO in an interview. Tier 5 case studies use SCADET as the design template.
+See [concepts/05-radio-framework](concepts/05-radio-framework/README.md) for how to use RADIO in an interview. Tier 5 case studies use SCADET as the design template.

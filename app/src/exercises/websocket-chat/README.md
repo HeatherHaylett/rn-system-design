@@ -1,6 +1,6 @@
 # Exercise: WebSocket Chat
 
-**Concept:** [05 — Networking Protocols](../../../../concepts/05-networking/README.md)
+**Concept:** [07 — Networking Protocols](../../../../concepts/07-networking/README.md)
 **Difficulty:** Advanced
 **Time:** 50–60 minutes
 

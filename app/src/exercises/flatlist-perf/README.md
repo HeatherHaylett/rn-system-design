@@ -1,6 +1,6 @@
 # Exercise: FlatList Performance
 
-**Concept:** [10 — Performance](../../../../concepts/10-performance/README.md)
+**Concept:** [13 — Performance](../../../../concepts/13-performance/README.md)
 **Difficulty:** Intermediate
 **Time:** 35–45 minutes
 

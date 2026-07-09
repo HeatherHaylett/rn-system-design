@@ -1,6 +1,6 @@
 # Exercise: Offline-First Notes
 
-**Concept:** [07 — Offline-First](../../../../concepts/07-offline-first/README.md)
+**Concept:** [10 — Offline-First](../../../../concepts/10-offline-first/README.md)
 **Difficulty:** Advanced
 **Time:** 60–75 minutes
 

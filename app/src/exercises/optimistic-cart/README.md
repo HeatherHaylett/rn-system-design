@@ -1,6 +1,6 @@
 # Exercise: Optimistic Cart
 
-**Concept:** [08 — Optimistic Updates & Conflict Resolution](../../../../concepts/08-optimistic-updates/README.md)
+**Concept:** [08 — Optimistic Updates & Conflict Resolution](../../../../concepts/11-optimistic-updates/README.md)
 **Difficulty:** Intermediate
 **Time:** 40–50 minutes
 

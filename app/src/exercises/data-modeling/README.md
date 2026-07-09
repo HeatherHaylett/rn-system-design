@@ -1,6 +1,6 @@
 # Exercise: Data Modeling
 
-**Concept:** [04 — Data Modeling](../../../../concepts/04-data-modeling/README.md)
+**Concept:** [06 — Data Modeling](../../../../concepts/06-data-modeling/README.md)
 **Difficulty:** Intermediate
 **Time:** 35–45 minutes
 
