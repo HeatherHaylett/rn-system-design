@@ -15,34 +15,8 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Product } from './types'
-
-// ─── Mock API (pretend this is a real network call) ───────────────────────────
-
-const MOCK_PRODUCTS: Record<string, Product> = {
-  'p-001': {
-    id: 'p-001',
-    name: 'Wireless Headphones',
-    description: 'Premium noise-cancelling headphones with 30-hour battery life.',
-    price: 249.99,
-    inStock: true,
-    stockCount: 3,
-  },
-  'p-002': {
-    id: 'p-002',
-    name: 'Mechanical Keyboard',
-    description: 'Compact 65% layout with tactile switches.',
-    price: 129.99,
-    inStock: false,
-    stockCount: 0,
-  },
-}
-
-async function fetchProduct(id: string): Promise<Product> {
-  await new Promise(resolve => setTimeout(resolve, 800)) // simulate network
-  const product = MOCK_PRODUCTS[id]
-  if (!product) throw new Error(`Product ${id} not found`)
-  return product
-}
+import { cartService } from './domain/CartService';
+import { productService } from './domain/ProductService';
 
 // ─── The unlayered component ──────────────────────────────────────────────────
 
@@ -56,7 +30,7 @@ export default function ProductScreen({ productId }: Props) {
   const [addingToCart, setAddingToCart] = useState(false)
 
   useEffect(() => {
-    fetchProduct(productId)
+    productService.getProduct(productId)
       .then(setProduct)
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
@@ -65,25 +39,16 @@ export default function ProductScreen({ productId }: Props) {
   async function handleAddToCart() {
     if (!product) return
 
-    // Business rule: quantity must be 1–99
-    if (quantity < 1 || quantity > 99) {
-      Alert.alert('Invalid quantity', 'Quantity must be between 1 and 99.')
-      return
-    }
-
-    // Business rule: can't add out-of-stock item
-    if (!product.inStock) {
-      Alert.alert('Out of stock', 'This item is not available.')
-      return
-    }
-
     setAddingToCart(true)
     try {
-      // Pretend we're writing to AsyncStorage / sending to server
-      await new Promise(resolve => setTimeout(resolve, 400))
+      await cartService.addToCart(product, quantity);
       Alert.alert('Added to cart', `${quantity}x ${product.name}`)
-    } catch {
-      Alert.alert('Error', 'Failed to add to cart. Please try again.')
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        Alert.alert('Error', err.message)
+      } else {
+        console.error("An unexpected error occurred", String(err));
+      }
     } finally {
       setAddingToCart(false)
     }

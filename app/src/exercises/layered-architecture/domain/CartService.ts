@@ -1,5 +1,4 @@
-// domain/CartService.ts
-//import { createCartRepository } from '../data/CartRepository'
+import { createCartRepository } from '../data/CartRepository'
 import type { Product } from '../types'
 
 export type CartRepository = {
@@ -16,4 +15,4 @@ export function createCartService(repo: CartRepository) {
     }
 }
 
-export const CartService = createCartService({ addItem: async () => { } })
+export const cartService = createCartService(createCartRepository());
