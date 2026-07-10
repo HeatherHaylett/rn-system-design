@@ -14,9 +14,9 @@
 
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { Product } from './types'
-import { cartService } from './domain/CartService';
-import { productService } from './domain/ProductService';
+import { Product } from '../types'
+import { cartService } from '../domain/CartService';
+import { productService } from '../domain/ProductService';
 
 // ─── The unlayered component ──────────────────────────────────────────────────
 
