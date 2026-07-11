@@ -11,13 +11,12 @@
  *   npx expo install @tanstack/react-query zustand
  */
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   FlatList,
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -31,26 +30,7 @@ import { useQuery, useQueryClient, QueryClientProvider, QueryClient } from '@tan
 // This modal state is only ever used by FeedScreen. Nothing else in the app
 // cares whether the new-post modal is open. It doesn't belong in a global store.
 // (Simulating a Zustand store inline here for simplicity)
-let _isNewPostModalOpen = false
-const _listeners = new Set<() => void>()
 
-const globalModalStore = {
-  get: () => _isNewPostModalOpen,
-  set: (value: boolean) => {
-    _isNewPostModalOpen = value
-    _listeners.forEach(l => l())
-  },
-  subscribe: (listener: () => void) => {
-    _listeners.add(listener)
-    return () => _listeners.delete(listener)
-  },
-}
-
-function useGlobalModal() {
-  const [, rerender] = useState(0)
-  useEffect(() => globalModalStore.subscribe(() => rerender(n => n + 1)), [])
-  return [globalModalStore.get(), globalModalStore.set] as const
-}
 
 // ─── PROBLEM 2: Notification count in the wrong place ────────────────────────
 // The count is fetched inside FeedScreen but TabBar needs it too.
@@ -123,7 +103,7 @@ function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: 
   const filteredPosts = data?.filter(p => p.content.toLowerCase().includes(query.toLowerCase()));
 
   // PROBLEM 3: Reading from the global modal store
-  const [isModalOpen, setIsModalOpen] = useGlobalModal()
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [newPostContent, setNewPostContent] = useState('')
 
   async function handleCreatePost() {
@@ -146,7 +126,7 @@ function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: 
   )
 
   if (isPending) return <ActivityIndicator style={styles.center} />
-  if (isError) return <Text style={styles.error}>Error: {error}</Text>
+  if (isError) return <Text style={styles.error}>Error: {error.message}</Text>
 
   return (
     <View style={styles.flex}>
