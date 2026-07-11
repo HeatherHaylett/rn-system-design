@@ -11,9 +11,10 @@
  *   npx expo install @tanstack/react-query zustand
  */
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import {
   ActivityIndicator,
+  FlatList,
   Modal,
   Pressable,
   ScrollView,
@@ -81,6 +82,19 @@ function TabBar({
   )
 }
 
+const PostItem = React.memo(function PostItem({ post, onLike }: { post: Post, onLike: (postId: string) => void }) {
+  console.log('PostItem render:', post.id)
+  return (
+    <View style={styles.postCard}>
+      <Text style={styles.postAuthor}>{post.author.name}</Text>
+      <Text>{post.content}</Text>
+      <Pressable onPress={() => onLike(post.id)}>
+        <Text style={styles.postMeta}>{post.likeCount} likes</Text>
+      </Pressable>
+    </View>
+  )
+})
+
 // ─── Feed Screen ─────────────────────────────────────────────────────────────
 function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: (n: number) => void }) {
   // PROBLEM 1: Manual server state management
@@ -132,12 +146,15 @@ function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: 
   }
 
   // Updates the whole `posts` array for a single like
-  async function handleLikePost(postId: string) {
+  const handleLikePost = useCallback(async (postId: string) => {
     await mockApi.likePost(postId)
-    setPosts(current =>
-      current.map(p => (p.id === postId ? { ...p, likeCount: p.likeCount + 1 } : p))
-    )
-  }
+    setPosts(current => current.map(p => (p.id === postId ? { ...p, likeCount: p.likeCount + 1 } : p)))
+  }, [])
+
+  const renderPostItem = useCallback(
+    ({ item }: { item: Post }) => <PostItem post={item} onLike={handleLikePost} />,
+    [handleLikePost]
+  )
 
   if (postsLoading) return <ActivityIndicator style={styles.center} />
   if (postsError) return <Text style={styles.error}>Error: {postsError}</Text>
@@ -150,17 +167,11 @@ function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: 
         value={query}
         onChangeText={setQuery}
       />
-      <ScrollView>
-        {filteredPosts.map(post => (
-          <View key={post.id} style={styles.postCard}>
-            <Text style={styles.postAuthor}>{post.author.name}</Text>
-            <Text>{post.content}</Text>
-            <Pressable onPress={() => handleLikePost(post.id)}>
-              <Text style={styles.postMeta}>{post.likeCount} likes</Text>
-            </Pressable>
-          </View>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={filteredPosts}
+        renderItem={renderPostItem}
+        keyExtractor={(post: Post) => post.id}
+      />
       <Pressable style={styles.fab} onPress={() => setIsModalOpen(true)}>
         <Text style={styles.fabText}>+</Text>
       </Pressable>
