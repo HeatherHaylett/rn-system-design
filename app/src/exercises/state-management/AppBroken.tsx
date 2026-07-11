@@ -84,7 +84,6 @@ function TabBar({
 }
 
 const PostItem = React.memo(function PostItem({ post, onLike }: { post: Post, onLike: (postId: string) => void }) {
-  console.log('PostItem render:', post.id)
   return (
     <View style={styles.postCard}>
       <Text style={styles.postAuthor}>{post.author.name}</Text>
