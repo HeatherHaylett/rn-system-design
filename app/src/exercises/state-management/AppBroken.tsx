@@ -131,6 +131,14 @@ function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: 
     setIsModalOpen(false)
   }
 
+  // Updates the whole `posts` array for a single like
+  async function handleLikePost(postId: string) {
+    await mockApi.likePost(postId)
+    setPosts(current =>
+      current.map(p => (p.id === postId ? { ...p, likeCount: p.likeCount + 1 } : p))
+    )
+  }
+
   if (postsLoading) return <ActivityIndicator style={styles.center} />
   if (postsError) return <Text style={styles.error}>Error: {postsError}</Text>
 
@@ -147,7 +155,9 @@ function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: 
           <View key={post.id} style={styles.postCard}>
             <Text style={styles.postAuthor}>{post.author.name}</Text>
             <Text>{post.content}</Text>
-            <Text style={styles.postMeta}>{post.likeCount} likes</Text>
+            <Pressable onPress={() => handleLikePost(post.id)}>
+              <Text style={styles.postMeta}>{post.likeCount} likes</Text>
+            </Pressable>
           </View>
         ))}
       </ScrollView>

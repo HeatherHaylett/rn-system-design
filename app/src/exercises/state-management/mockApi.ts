@@ -42,3 +42,7 @@ export async function createPost(content: string): Promise<Post> {
     createdAt: new Date().toISOString(),
   }
 }
+
+export async function likePost(postId: string): Promise<void> {
+  await delay(200)
+}
