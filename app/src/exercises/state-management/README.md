@@ -34,12 +34,12 @@ The `filteredPosts` (posts filtered by the search query) is being stored in its 
 
 ## Acceptance Criteria
 
-- [ ] Feed posts fetched with `useQuery` — no manual `useState`/`useEffect` for server data
-- [ ] Current user fetched with `useQuery` — same
-- [ ] Notification count accessible to `TabBar` and `FeedScreen` without prop drilling, but not in a heavier store than necessary
-- [ ] New post modal state is local to `FeedScreen`
-- [ ] `filteredPosts` is computed directly from `posts` and `query`, not stored in state
-- [ ] App still works end-to-end after refactor
+- [x] Feed posts fetched with `useQuery` — no manual `useState`/`useEffect` for server data
+- [x] Current user fetched with `useQuery` — same
+- [x] Notification count accessible to `TabBar` and `FeedScreen` without prop drilling, but not in a heavier store than necessary
+- [x] New post modal state is local to `FeedScreen`
+- [x] `filteredPosts` is computed directly from `posts` and `query`, not stored in state
+- [x] App still works end-to-end after refactor
 
 ## The Question This Prepares You For
 
@@ -71,17 +71,17 @@ Fill this in as you work — you'll use it when you explain your decisions in an
 ```
 Before fix — what I observed in React DevTools:
 - Which component owned notification count, and why that was wrong:
-
+    
 
 - What re-rendered when I liked a post (list every component):
-
+    TextInput, everything in ScrollView, the modal button
 
 - Where filteredPosts lived and why that caused a bug:
 
 
 After fix — what changed:
 - Which component now owns notification count, and why:
-
+    AppBroken because both Tab and Feed can access the count from parent
 
 - What re-renders on a like action now:
 

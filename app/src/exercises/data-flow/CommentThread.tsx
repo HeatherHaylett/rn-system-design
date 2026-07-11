@@ -24,14 +24,7 @@ const INITIAL_COMMENTS: Comment[] = [
 type CommentCardProps = { comment: Comment }
 
 function CommentCard({ comment }: CommentCardProps) {
-  // VIOLATION 3: Derived state stored in useState.
-  // displayName is always firstName + ' ' + lastName. There is no scenario
-  // where it could be different from that. Storing it in state creates a
-  // second source of truth (what if comment.author changes? this won't update).
-  // Fix: compute it inline as a const.
-  const [displayName] = useState(
-    `${comment.author.firstName} ${comment.author.lastName}`
-  )
+  const displayName = `${comment.author.firstName} ${comment.author.lastName}`
 
   function handleLike() {
     // VIOLATION 1: Child mutating parent's data directly.
