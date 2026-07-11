@@ -9,7 +9,7 @@
  * Then redraw what it should look like.
  */
 
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { Comment } from './types'
 
@@ -20,26 +20,14 @@ const INITIAL_COMMENTS: Comment[] = [
 ]
 
 // ─── CommentCard ─────────────────────────────────────────────────────────────
-
-type CommentCardProps = { comment: Comment }
-
-function CommentCard({ comment }: CommentCardProps) {
+const CommentCard = ({ comment, onLike }: { comment: Comment, onLike: (id: string) => void }) => {
   const displayName = `${comment.author.firstName} ${comment.author.lastName}`
-
-  function handleLike() {
-    // VIOLATION 1: Child mutating parent's data directly.
-    // comment is a prop — it belongs to the parent. Mutating it here bypasses
-    // React's update cycle: the change won't trigger a re-render and the
-    // parent's state is silently corrupted.
-    // Fix: receive an onLike callback as a prop and call that instead.
-    comment.likeCount++
-  }
 
   return (
     <View style={styles.commentCard}>
       <Text style={styles.commentAuthor}>{displayName}</Text>
       <Text style={styles.commentContent}>{comment.content}</Text>
-      <Pressable onPress={handleLike}>
+      <Pressable onPress={() => onLike(comment.id)}>
         <Text style={styles.likeButton}>♥ {comment.likeCount}</Text>
       </Pressable>
     </View>
@@ -47,46 +35,18 @@ function CommentCard({ comment }: CommentCardProps) {
 }
 
 // ─── CommentList ─────────────────────────────────────────────────────────────
-
-type CommentListHandle = { addComment: (comment: Comment) => void }
-type CommentListProps = { comments: Comment[] }
-
-// VIOLATION 2 (part A): CommentList exposes an imperative handle via forwardRef
-// so that its sibling ReplyBox can call addComment() on it directly.
-// Siblings should never communicate this way — it's imperative, not reactive,
-// and it bypasses the parent entirely.
-// Fix: remove forwardRef, lift comments state to the parent, receive comments
-// as a prop and an onAdd callback.
-const CommentList = React.forwardRef<CommentListHandle, CommentListProps>(
-  ({ comments: initialComments }, ref) => {
-    // VIOLATION 4: Local copy of a prop.
-    // This useState is seeded from the prop, but if the parent updates the
-    // comments prop, this local copy won't reflect it — they diverge.
-    // Fix: render directly from the prop.
-    const [comments, setComments] = useState<Comment[]>(initialComments)
-
-    // Imperative method exposed to sibling — part of Violation 2
-    React.useImperativeHandle(ref, () => ({
-      addComment: (comment: Comment) => {
-        setComments(current => [...current, comment])
-      },
-    }))
-
-    return (
-      <View>
-        {comments.map(comment => (
-          <CommentCard key={comment.id} comment={comment} />
-        ))}
-      </View>
-    )
-  }
-)
+const CommentList = ({ comments, onLike }: { comments: Comment[], onLike: (id: string) => void }) => {
+  return (
+    <View>
+      {comments.map(comment => (
+        <CommentCard key={comment.id} comment={comment} onLike={onLike} />
+      ))}
+    </View>
+  )
+}
 
 // ─── ReplyBox ────────────────────────────────────────────────────────────────
-
-type ReplyBoxProps = { commentListRef: React.RefObject<CommentListHandle | null> }
-
-function ReplyBox({ commentListRef }: ReplyBoxProps) {
+function ReplyBox({ addComment }: { addComment: (comment: Comment) => void }) {
   const [text, setText] = useState('')
 
   function handleSubmit() {
@@ -99,11 +59,7 @@ function ReplyBox({ commentListRef }: ReplyBoxProps) {
       likeCount: 0,
       createdAt: new Date().toISOString(),
     }
-
-    // VIOLATION 2 (part B): Sibling directly calling a method on CommentList.
-    // ReplyBox and CommentList are siblings — neither should know the other exists.
-    // Fix: receive an onSubmit callback from the parent, call that instead.
-    commentListRef.current?.addComment(newComment)
+    addComment(newComment)
     setText('')
   }
 
@@ -126,16 +82,30 @@ function ReplyBox({ commentListRef }: ReplyBoxProps) {
 // ─── CommentThread (root) ─────────────────────────────────────────────────────
 
 export default function CommentThread() {
-  // The ref wiring that exists solely because of Violation 2
-  const commentListRef = useRef<CommentListHandle>(null)
+  const [comments, setComments] = useState<Comment[]>(INITIAL_COMMENTS)
+
+  function addComment(comment: Comment) {
+    setComments(current => [...current, comment])
+  }
+
+  function addLike(id: string) {
+    const updatedComments = comments.map((c) => {
+      if (c.id === id) {
+        return {...c, likeCount: c.likeCount + 1}
+      } else {
+        return c
+      }
+    })
+    setComments(updatedComments)
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Comments</Text>
       <ScrollView style={styles.flex}>
-        <CommentList ref={commentListRef} comments={INITIAL_COMMENTS} />
+        <CommentList comments={comments} onLike={addLike} />
       </ScrollView>
-      <ReplyBox commentListRef={commentListRef} />
+      <ReplyBox addComment={addComment} />
     </View>
   )
 }
