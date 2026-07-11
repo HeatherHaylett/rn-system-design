@@ -26,22 +26,11 @@ import * as mockApi from './mockApi'
 import { Notification, Post, User } from './types'
 import { useQuery, useQueryClient, QueryClientProvider, QueryClient } from '@tanstack/react-query'
 
-// ─── PROBLEM 3: Over-globalized UI state ─────────────────────────────────────
-// This modal state is only ever used by FeedScreen. Nothing else in the app
-// cares whether the new-post modal is open. It doesn't belong in a global store.
-// (Simulating a Zustand store inline here for simplicity)
-
-
-// ─── PROBLEM 2: Notification count in the wrong place ────────────────────────
-// The count is fetched inside FeedScreen but TabBar needs it too.
-// Currently it's threaded up through a ref callback — ugly and fragile.
-// It should live somewhere both components can access naturally.
-
 // ─── Tab Bar ─────────────────────────────────────────────────────────────────
 function TabBar({
   activeTab,
   onTabChange,
-  notificationCount, // ← being drilled from FeedScreen up to App then back down
+  notificationCount,
 }: {
   activeTab: string
   onTabChange: (tab: string) => void
@@ -76,33 +65,16 @@ const PostItem = React.memo(function PostItem({ post, onLike }: { post: Post, on
 })
 
 // ─── Feed Screen ─────────────────────────────────────────────────────────────
-function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: (n: number) => void }) {
-  // PROBLEM 1: Manual server state management
-  // This is the pattern React Query is designed to replace.
-  // Three useState calls just to fetch one resource.
+function FeedScreen() {
   const queryClient = useQueryClient()
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['posts'],
     queryFn: mockApi.fetchFeed,
   })
 
-  // PROBLEM 2: Notification count fetched here, needed in TabBar
-  // This forces a prop callback workaround to get the count up to the parent.
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  useEffect(() => {
-    mockApi.fetchNotifications().then(n => {
-      setNotifications(n)
-      onNotificationCountChange(n.filter(n => !n.read).length)
-    })
-  }, [onNotificationCountChange])
-
-  // PROBLEM 4: Derived state stored in useState
-  // filteredPosts can always be computed from posts + query.
-  // Storing it separately creates two sources of truth.
   const [query, setQuery] = useState('')
   const filteredPosts = data?.filter(p => p.content.toLowerCase().includes(query.toLowerCase()));
 
-  // PROBLEM 3: Reading from the global modal store
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newPostContent, setNewPostContent] = useState('')
 
@@ -168,9 +140,6 @@ function FeedScreen({ onNotificationCountChange }: { onNotificationCountChange: 
 
 // ─── Profile Screen ───────────────────────────────────────────────────────────
 function ProfileScreen() {
-  // PROBLEM 1 (again): Same manual fetch pattern as FeedScreen.
-  // The current user data could be shared — if FeedScreen also shows the
-  // user's avatar, both screens would independently re-fetch the same data.
   const { isPending: loading, data: user } = useQuery({
     queryKey: ['user'],
     queryFn: mockApi.fetchCurrentUser,
@@ -190,10 +159,16 @@ function ProfileScreen() {
 // ─── App Root ─────────────────────────────────────────────────────────────────
 export default function AppBroken() {
   const [activeTab, setActiveTab] = useState('Feed')
-  // PROBLEM 2: Notification count stored here just to pass to TabBar
-  // because it's fetched inside FeedScreen. Awkward.
   const [notificationCount, setNotificationCount] = useState(0)
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [queryClient] = useState(() => new QueryClient())
+
+  useEffect(() => {
+    mockApi.fetchNotifications().then(n => {
+      setNotifications(n);
+      setNotificationCount(n.filter(n => !n.read).length);
+    })
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -204,7 +179,7 @@ export default function AppBroken() {
           notificationCount={notificationCount}
         />
         {activeTab === 'Feed' ? (
-          <FeedScreen onNotificationCountChange={setNotificationCount} />
+          <FeedScreen />
         ) : (
           <ProfileScreen />
         )}
