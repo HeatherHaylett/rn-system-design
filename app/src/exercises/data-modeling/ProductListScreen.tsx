@@ -12,16 +12,18 @@
 
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
-import { RawProduct, fetchProducts } from './rawApi'
+import { fetchProducts } from './rawApi'
+import { Product } from './types'
+import { toProductListPage } from './mappers'
 
 export default function ProductListScreen() {
-  const [products, setProducts] = useState<RawProduct[]>([])
+  const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProducts()
-      .then(response => setProducts(response.products))
+      .then(response => setProducts(toProductListPage(response).products))
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }, [])
@@ -32,18 +34,14 @@ export default function ProductListScreen() {
   return (
     <FlatList
       data={products}
-      keyExtractor={item => item.product_id}
+      keyExtractor={item => item.id}
       contentContainerStyle={styles.list}
       renderItem={({ item }) => {
         // ❌ Inline transformations — these should all be in mappers.ts
-        const name = item.product_name.trim()
-        const price = (item.unit_price / 100).toFixed(2)
-        const inStock = item.is_active && (item.inventory_count ?? 0) > 0
-        const category = item.category_slug
-          .split('-')
-          .map(w => w[0].toUpperCase() + w.slice(1))
-          .join(' ')
-
+        const name = item.name
+        const price = item.price
+        const inStock = item.inStock
+        const category = item.displayCategory
         return (
           <View style={styles.card}>
             <Text style={styles.name}>{name}</Text>

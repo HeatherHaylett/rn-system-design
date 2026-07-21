@@ -7,3 +7,23 @@
 //   Product        — clean product ready for display
 //   ProductListPage — paginated list of products with cursor
 //   ProductUI      — Product + client-only fields (isAddingToCart, error)
+
+export type Product = {
+    id: string,
+    name: string,
+    price: string,
+    inStock: boolean,
+    displayCategory: string,
+}
+
+export type ProductListPage = {
+    products: Product[]
+    nextCursor: string | null
+    totalCount: number
+}
+
+export type ProductUI = {
+    product: Product,
+    isAddingToCart: boolean,
+    error: string
+}
