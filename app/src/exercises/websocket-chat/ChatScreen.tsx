@@ -41,15 +41,52 @@ export default function ChatScreen() {
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastConnectedAtRef = useRef<string>(new Date().toISOString())
 
-  // TODO 1: Connect WebSocket on mount
-  //
-  // Call createMockWebSocket with:
-  //   onOpen: set status to 'connected', reset reconnect attempt counter
-  //   onMessage: append message to list
-  //   onClose(wasClean): if not clean, set status to 'reconnecting' and start backoff
-  //
-  // Store the result in wsRef.current
-  // On unmount: call wsRef.current?.close()
+  function openWS() {
+    setConnectionStatus("connected");
+    reconnectTimerRef.current = null;
+    reconnectAttemptRef.current = 0;
+    lastConnectedAtRef.current = new Date().toISOString();
+  }
+
+  function appendNewMessage(message: Message) {
+    setMessages(curr => [...curr, message])
+  }
+
+  function retry() {
+    // Attempt max of 3 retries
+    if (reconnectAttemptRef.current === 3) {
+      setConnectionStatus("offline");
+      return;
+    };
+    // Don't attempt to reconnect if current retry
+    if (reconnectTimerRef.current) return;
+    reconnectAttemptRef.current++;
+    const delay = Math.min(BASE_RECONNECT_DELAY * 2 ** reconnectAttemptRef.current, MAX_RECONNECT_DELAY)
+    console.log(`[ws] reconnect attempt ${reconnectAttemptRef.current} — delay ${delay}ms`)
+    reconnectTimerRef.current = setTimeout(() => {
+      connectWS();
+    }, delay);
+  }
+
+  function closeWS(wasClean: boolean) {
+    if (!wasClean) {
+      setConnectionStatus("reconnecting");
+      retry();
+    }
+  }
+
+  function connectWS() {
+    wsRef.current = createMockWebSocket({
+      onOpen: () => openWS(),
+      onMessage: (m) => appendNewMessage(m),
+      onClose: (wasClean) => closeWS(wasClean)
+    });
+  }
+
+  useEffect(() => {
+    connectWS();
+    return () => wsRef.current?.close();
+  }, [])
 
   // TODO 2: Exponential backoff reconnection
   //
@@ -83,7 +120,7 @@ export default function ChatScreen() {
       status: 'sending',
       isOptimistic: true,
     }
-
+    setMessages(curr => [...curr, message])
     // TODO 4: Optimistic send
     //
     // 1. Add message to list with status: 'sending'
@@ -125,7 +162,7 @@ export default function ChatScreen() {
         renderItem={({ item }) => {
           const isMe = item.senderId === CURRENT_USER_ID
           return (
-            <View style={[styles.bubble, isMe ? styles.bubbleMe : styles.bubbleThem]}>
+            <View style={[styles.bubble, isMe && styles.bubbleMe]}>
               <Text style={[styles.bubbleText, isMe && styles.bubbleTextMe]}>
                 {item.content}
               </Text>
@@ -162,7 +199,7 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#fff', alignSelf: 'stretch' },
   statusBanner: { backgroundColor: '#f59e0b', padding: 8, alignItems: 'center' },
   statusText: { color: '#fff', fontWeight: '600', fontSize: 13 },
   messageList: { padding: 16, gap: 8, paddingBottom: 24 },

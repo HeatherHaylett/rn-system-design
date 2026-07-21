@@ -58,16 +58,18 @@ export function createMockWebSocket(options: MockWSOptions): MockWebSocket {
 
   function connect() {
     if (isClosed) return
-
+    console.log("[ws] connecting...")
     setTimeout(() => {
       if (isClosed) return
       isConnected = true
       options.onOpen()
+      console.log("[ws] connected")
 
       // Send an incoming message every 4–8 seconds
       incomingTimer = setInterval(() => {
         if (!isConnected || isClosed) return
         const content = INCOMING_MESSAGES[Math.floor(Math.random() * INCOMING_MESSAGES.length)]
+        console.log(`[ws] message received: ${content}`)
         options.onMessage(makeIncomingMessage(content))
       }, 4000 + Math.random() * 4000)
 
@@ -85,6 +87,7 @@ export function createMockWebSocket(options: MockWSOptions): MockWebSocket {
     if (incomingTimer) clearInterval(incomingTimer)
     if (dropTimer) clearTimeout(dropTimer)
     options.onClose(false) // unclean close
+    console.log("[ws] disconnected (unclean)")
   }
 
   connect()
