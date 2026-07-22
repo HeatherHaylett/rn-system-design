@@ -64,7 +64,12 @@ export default function ChatScreen() {
     const delay = Math.min(BASE_RECONNECT_DELAY * 2 ** reconnectAttemptRef.current, MAX_RECONNECT_DELAY)
     console.log(`[ws] reconnect attempt ${reconnectAttemptRef.current} — delay ${delay}ms`)
     reconnectTimerRef.current = setTimeout(() => {
-      connectWS();
+      try {
+        connectWS();
+      } catch {
+        console.error("WS could not reconnect")
+      }
+      sendFailedMessages();
     }, delay);
   }
 
@@ -88,9 +93,20 @@ export default function ChatScreen() {
     return () => wsRef.current?.close();
   }, [])
 
+  function sendFailedMessages() {
+    setMessages((prevMessages) =>
+      prevMessages.map((m) => {
+        if (m.isOptimistic) {
+          return { ...m, isOptimistic: false, status: 'sent' }
+        } else {
+          return m;
+        }
+      }))
+  }
+
   function updateStatus(message: Message) {
     if (wsRef.current?.send(message.content)) {
-      const updatedStatus: Message = { ...message, status: "sent" }
+      const updatedStatus: Message = { ...message, isOptimistic: false, status: "sent" }
       setMessages((prevState) =>
         prevState.map((m) => {
           if (m.id === message.id) {
