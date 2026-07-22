@@ -88,26 +88,31 @@ export default function ChatScreen() {
     return () => wsRef.current?.close();
   }, [])
 
-  // TODO 2: Exponential backoff reconnection
-  //
-  // function scheduleReconnect() {
-  //   const delay = Math.min(BASE_RECONNECT_DELAY * 2 ** reconnectAttemptRef.current, MAX_RECONNECT_DELAY)
-  //   reconnectAttemptRef.current++
-  //   reconnectTimerRef.current = setTimeout(() => {
-  //     // reconnect: close old ws, create new one
-  //   }, delay)
-  // }
-  //
-  // Call scheduleReconnect() in the onClose handler when wasClean is false
-  // Clear the timer on unmount
-
-  // TODO 3: Re-validate on foreground
-  //
-  // Listen to AppState changes. When the app becomes 'active':
-  //   - Re-establish WebSocket if disconnected
-  //   - Call fetchMissedMessages(lastConnectedAtRef.current)
-  //   - Merge the results into the messages list in chronological order
-  //   - Update lastConnectedAtRef.current to now
+  function updateStatus(message: Message) {
+    if (wsRef.current?.send(message.content)) {
+      const updatedStatus: Message = { ...message, status: "sent" }
+      setMessages((prevState) =>
+        prevState.map((m) => {
+          if (m.id === message.id) {
+            return updatedStatus;
+          } else {
+            return m;
+          }
+        })
+      )
+    } else {
+      const updatedStatus: Message = { ...message, status: "failed" }
+      setMessages((prevState) =>
+        prevState.map((m) => {
+          if (m.id === message.id) {
+            return updatedStatus;
+          } else {
+            return m;
+          }
+        })
+      )
+    }
+  }
 
   function handleSend() {
     if (!inputText.trim()) return
@@ -121,11 +126,9 @@ export default function ChatScreen() {
       isOptimistic: true,
     }
     setMessages(curr => [...curr, message])
+    updateStatus(message)
     // TODO 4: Optimistic send
-    //
-    // 1. Add message to list with status: 'sending'
-    // 2. Try wsRef.current?.send(message.content)
-    // 3. If send returns true: update message status to 'sent'
+
     // 4. If send returns false (disconnected): update message status to 'failed'
     //    and queue it to retry when reconnected
 
@@ -199,7 +202,7 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', alignSelf: 'stretch' },
+  container: { flex: 1, backgroundColor: '#fff', alignSelf: 'stretch', paddingTop: 20 },
   statusBanner: { backgroundColor: '#f59e0b', padding: 8, alignItems: 'center' },
   statusText: { color: '#fff', fontWeight: '600', fontSize: 13 },
   messageList: { padding: 16, gap: 8, paddingBottom: 24 },
@@ -214,7 +217,7 @@ const styles = StyleSheet.create({
   errorHint: { fontSize: 11, color: '#fca5a5', marginTop: 2 },
   inputRow: {
     flexDirection: 'row', padding: 12, gap: 8,
-    borderTopWidth: 1, borderTopColor: '#e5e7eb',
+    borderTopWidth: 1, borderTopColor: '#e5e7eb', paddingBottom: 50
   },
   input: {
     flex: 1, backgroundColor: '#f3f4f6',
