@@ -10,11 +10,13 @@ class CacheService {
     private ttlDefault = 60000;
 
     get<T>(key: string): T | null {
+        console.log(`Get value for ${key}`)
         const entry = this.cache.get(key);
 
         if (!entry) return null;
 
         if (Math.floor(Date.now()) - entry.cachedAt > entry.ttl) {
+            console.log("Cache stale")
             this.cache.delete(key)
             return null;
         }
@@ -28,6 +30,9 @@ class CacheService {
             cachedAt: Math.floor(Date.now()),
             ttl: ttl,
         }
+        console.log(`Setting ${entry} at key ${key}`)
         this.cache.set(key, entry)
     }
 }
+
+export const cacheService = new CacheService();
