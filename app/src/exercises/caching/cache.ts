@@ -7,7 +7,7 @@ type CacheEntry<T> = {
 
 class CacheService {
     private cache = new Map<string, CacheEntry<any>>()
-    private ttlDefault = 300000;
+    private ttlDefault = 60000;
 
     get<T>(key: string): T | null {
         const entry = this.cache.get(key);
