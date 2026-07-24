@@ -9,14 +9,14 @@ class CacheService {
     private cache = new Map<string, CacheEntry<any>>()
     private ttlDefault = 300000;
 
-    get<T>(key: string): T | undefined {
+    get<T>(key: string): T | null {
         const entry = this.cache.get(key);
 
-        if (!entry) return undefined;
+        if (!entry) return null;
 
         if (Math.floor(Date.now()) - entry.cachedAt > entry.ttl) {
             this.cache.delete(key)
-            return undefined;
+            return null;
         }
 
         return entry.data;
