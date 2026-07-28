@@ -94,15 +94,15 @@ This is more precise than TTL but requires you to know what events affect what c
 
 ## Where to Store Cache Data on Mobile
 
-**In-memory (React state / Zustand / Redux):** Fastest, but gone when the app is killed. Fine for session-level caching.
+| Storage | Speed | Persists | Best for | Avoid when |
+|---|---|---|---|---|
+| React state / Zustand | Fastest | No (gone on kill) | Session-level cache, UI state | Data must survive app restart |
+| AsyncStorage | Slow (serializes JSON on JS thread) | Yes | Simple config, small flags | Large datasets, frequent reads |
+| MMKV | ~10× faster than AsyncStorage | Yes | User profile, feed cache, settings, offline queue | Complex relational queries |
+| SQLite / WatermelonDB | Fast for queries | Yes | Thousands of records, full-text search, joins (chat history, contacts) | Simple key-value data (overkill) |
+| expo-image / fast-image | Handled internally | Yes (disk) | Image caching | — don't roll your own |
 
-**AsyncStorage:** Simple key-value store, persists across app restarts. Slow for large datasets (it's serializing JSON). Fine for small amounts of data.
-
-**MMKV:** Significantly faster than AsyncStorage for reads/writes. Drop-in replacement for most AsyncStorage use cases. Good for caches that need to be fast.
-
-**SQLite / WatermelonDB:** Full relational database on device. Right for large datasets with complex queries (hundreds of messages, thousands of contacts). More setup, more power.
-
-**Image caching:** Don't reinvent this. Use `expo-image` or `react-native-fast-image` — they handle disk-based image caching, memory management, and eviction automatically.
+**Rule of thumb:** start with MMKV. Move to SQLite only when you need to query or filter across a large dataset — not just read it back as a whole.
 
 ## Cache Size Limits and Eviction
 
