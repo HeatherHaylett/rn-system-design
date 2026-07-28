@@ -28,6 +28,7 @@ import {
   Switch,
   Alert,
 } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Note, SyncStatus } from './types'
 import {
   fetchNotes,
@@ -43,8 +44,19 @@ import {
 // TODO 1: Replace this in-memory store with a real local storage layer.
 // The local store should persist across JS reloads (simulate app restart
 // by shaking your device or reloading the bundle).
+//
+// Using AsyncStorage here because it works in Expo Go without a native build.
+// In production you'd swap this for MMKV — same API shape, ~10x faster reads.
 // ---------------------------------------------------------------------------
 let localStore: Note[] = []
+
+export const saveNotes = async (notes: Note[]) =>
+  AsyncStorage.setItem('notes', JSON.stringify(notes))
+
+export const loadNotesFromStorage = async (): Promise<Note[]> => {
+  const raw = await AsyncStorage.getItem('notes')
+  return raw ? JSON.parse(raw) : []
+}
 
 // ---------------------------------------------------------------------------
 // TODO 2: Implement a sync queue.
