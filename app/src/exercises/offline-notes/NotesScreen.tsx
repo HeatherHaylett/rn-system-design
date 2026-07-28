@@ -58,6 +58,14 @@ export const loadNotesFromStorage = async (): Promise<Note[]> => {
   return raw ? JSON.parse(raw) : []
 }
 
+async function demo() {
+  await AsyncStorage.setItem("userToken", "abc123");
+
+  const token = await AsyncStorage.getItem("userToken");
+  console.log("Stored token:", token); // abc123
+
+  await AsyncStorage.removeItem("userToken");
+}
 // ---------------------------------------------------------------------------
 // TODO 2: Implement a sync queue.
 // The queue should:
@@ -83,6 +91,7 @@ export default function NotesScreen() {
   // ---------------------------------------------------------------------------
   useEffect(() => {
     loadNotes()
+    demo()
   }, [])
 
   async function loadNotes() {
